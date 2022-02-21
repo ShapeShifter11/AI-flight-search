@@ -3,24 +3,33 @@
 
 #define MAX 100
 
+/**
+ * @brief structure of the flight database
+ * 
+ */
 const struct FL {
     char from[20];
     char to[20];
     int distance;
-    char skip;
+    char skip; // used in backtracking 
 };
 
+/**
+ * @brief structure used for backtracking
+ * 
+ */
 const struct stack {
     char from[20];
     char to[20];
     int distance;
 };
 
-struct FL flight[MAX];
-struct stack bt_stack[MAX];
+struct FL flight[MAX]; //array of database structures
+struct stack bt_stack[MAX]; // array of backtracking stack
 
-int f_pos = 0, find_pos = 0;
-int tos = 0;
+int f_pos = 0; //number of entries in flight database
+int find_pos = 0; //index for searching flight database
+int tos = 0; //top of stack
 
 void setup(void), assert_flight(char *from, char*to, int dist);
 int match(char *from, char *to), find(char *from, char *anywhere);
@@ -45,6 +54,13 @@ int main(void){
     return 0;
 }
 
+/**
+ * @brief initializes the flight database
+ * 
+ * @param void
+ * 
+ * @return void
+ */
 void setup(void){
     assert_flight("New York", "Chicago", 1000);
     assert_flight("Chicago", "Denver", 1000);
@@ -59,6 +75,15 @@ void setup(void){
     assert_flight("Denver", "Los Angelis", 1000);
 }
 
+/**
+ * @brief populates the flight database
+ * 
+ * @param from 
+ * @param to 
+ * @param dist 
+ * 
+ * @return void
+ */
 void assert_flight(char *from, char*to, int dist){
     if(f_pos<MAX){
         strcpy(flight[f_pos].to, to);
@@ -70,6 +95,14 @@ void assert_flight(char *from, char*to, int dist){
     else printf("Flight database full.\n");
 }
 
+/**
+ * @brief searches the database for a direct flight and returns the distance otherwise returns 0
+ * 
+ * @param from 
+ * @param to 
+ * 
+ * @return int 
+ */
 int match(char *from, char *to){
     register int t;
 
@@ -80,13 +113,21 @@ int match(char *from, char *to){
     return 0;
 }
 
+/**
+ * @brief given from, finds anywhere
+ * 
+ * @param from 
+ * @param anywhere 
+ * 
+ * @return int 
+ */
 int find(char *from, char *anywhere){
     find_pos = 0;
 
     while(find_pos < f_pos){
         if(!strcmp(flight[find_pos].from, from) && !flight[find_pos].skip){
             strcpy(anywhere, flight[find_pos].to);
-            flight[find_pos].skip = 1;
+            flight[find_pos].skip = 1; //make active
             return flight[find_pos].distance;
         }
         find_pos++;
@@ -94,6 +135,15 @@ int find(char *from, char *anywhere){
     return 0;
 }
 
+/**
+ * @brief pushes on top of stack
+ * 
+ * @param from 
+ * @param to 
+ * @param dist 
+ * 
+ * @return void
+ */
 void push(char *from, char *to, int dist){
 
     if(tos < MAX){
@@ -105,6 +155,15 @@ void push(char *from, char *to, int dist){
     else printf("stack is full.\n");
 }
 
+/**
+ * @brief pops from top of stack
+ * 
+ * @param from 
+ * @param to 
+ * @param dist 
+ * 
+ * @return void
+ */
 void pop(char *from, char *to, int *dist){
     if(tos > 0){
         tos--;
@@ -115,44 +174,11 @@ void pop(char *from, char *to, int *dist){
     else printf("stack underflow.\n");
 }
 
-void isFLight(char *from, char *to){
-    int matchHolder, dist;
-    char anywhere[20];
-
-    if(matchHolder = match(from, to)){
-        push(from, to, matchHolder);
-    }
-    
-    if(dist = find(from, anywhere)){
-        push(from, to, dist);
-        isFLight(anywhere, to);
-    }else if(tos > 0){
-        pop(from, to, &dist);
-        isFLight(from, to);
-    }
-}
-
-void isFlight1(char *from, char *to){
-    int matchHolder, dist;
-    char anywhere[20];
-
-    while(dist = find(from, anywhere)){
-        if(matchHolder = match(anywhere, to)){
-            push(from, to, dist);
-            push(anywhere, to, matchHolder);
-            return;
-        }
-    }
-    if(dist = find(from, anywhere)){
-        push(from, to, dist);
-        isFLight1(anywhere, to);
-    }
-    else if(tos>0){
-        pop(from, to, &dist);
-        isFLight1(from,to);
-    }
-}
-
+/**
+ * @brief show the route and total distance 
+ * 
+ * @param to 
+ */
 void route(char *to){
     int dist, t;
 
