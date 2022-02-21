@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX 100
 
@@ -113,7 +114,7 @@ int match(char *from, char *to){
 }
 
 /**
- * @brief given from, finds anywhere and returns the distance
+ * @brief given from, finds the closest anywhere and returns the distance
  * 
  * @param from char type
  * @param anywhere char type
@@ -121,15 +122,25 @@ int match(char *from, char *to){
  * @return int distance
  */
 int find(char *from, char *anywhere){
+    int pos, dist;
+
+    pos = 0;
+    dist = 32000; /*larger than the longest route in the database*/
     find_pos = 0;
 
     while(find_pos < f_pos){
         if(!strcmp(flight[find_pos].from, from) && !flight[find_pos].skip){
-            strcpy(anywhere, flight[find_pos].to);
-            flight[find_pos].skip = 1; //make active
-            return flight[find_pos].distance;
+            if(flight[find_pos].distance < dist){
+                pos = find_pos;
+                dist = flight[find_pos].distance;
+            }
         }
         find_pos++;
+    }
+    if(pos){
+        strcpy(anywhere, flight[pos].to);
+        flight[pos].skip = 1;
+        return flight[pos].distance;
     }
     return 0;
 }
@@ -142,7 +153,7 @@ int find(char *from, char *anywhere){
  * 
  * @return void
  */
-void isFlight(char *from, char *to){
+void isFLight(char *from, char *to){
     int d, dist;
     char anywhere[20];
 
@@ -219,3 +230,4 @@ void route(char *to){
     printf("%s\n", to);
     printf("Distance is %d.\n", dist);
 }
+
