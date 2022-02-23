@@ -13,5 +13,5 @@ You can chose from the following cities:
 -Calgary
 -Toronto
 
-The algorithm first searches the database for a direct flight between the selected destinations and displays '''to''' and '''from''' and the '''distance'''.
+The algorithm first searches the database for a direct flight between the selected destinations and displays `to` and `from` and the `distance`.
 If there isn't a direct flight between the selected destinations the algorithm displays the rout with the least distance between them and the transfer destination in the middle.
