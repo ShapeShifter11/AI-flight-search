@@ -1,6 +1,8 @@
 # AI-flight-search
 ## flight search routine using AI-style searching method
 
+program is developed in Ubuntu Linux
+
 When started the program will ask the user from where does he want to fly. 
 You can chose from the following cities:
 
